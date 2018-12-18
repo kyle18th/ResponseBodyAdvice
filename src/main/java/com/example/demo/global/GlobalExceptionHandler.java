@@ -2,6 +2,7 @@ package com.example.demo.global;
 
 import com.example.demo.exception.ServiceException;
 import com.example.demo.model.ResponseModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 @ResponseBody
 public class GlobalExceptionHandler {
@@ -26,7 +28,8 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ResponseModel handelException() {
+    public ResponseModel handelException(Exception e) {
+        logger.error(e.getMessage(), e);
         return ResponseModel.fail(10000, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
     }
 
@@ -37,6 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({HttpMessageNotReadableException.class,
             MethodArgumentTypeMismatchException.class})
     public ResponseModel handleHttpMessageNotReadableException(NestedRuntimeException e) {
+        logger.warn(e.getMessage(), e);
         return ResponseModel.fail(10001, Objects.requireNonNull(e.getMessage()).split(";")[0]);
     }
 
@@ -46,6 +50,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseModel handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        logger.warn(e.getMessage(), e);
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> String.format("%s %s", fieldError.getField(), fieldError.getDefaultMessage()))
                 .collect(Collectors.joining(", "));
@@ -57,7 +62,8 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseModel handelNoHandlerFoundException() {
+    public ResponseModel handelNoHandlerFoundException(NoHandlerFoundException e) {
+        logger.warn(e.getMessage(), e);
         return ResponseModel.fail(10004, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
@@ -66,7 +72,8 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseModel handelHttpRequestMethodNotSupportedException() {
+    public ResponseModel handelHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        logger.warn(e.getMessage(), e);
         return ResponseModel.fail(10005, HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase());
     }
 
@@ -75,6 +82,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ServiceException.class)
     public ResponseModel handelServiceException(ServiceException e) {
+        logger.warn(e.getMessage(), e);
         return ResponseModel.fail(e.getCode(), e.getReason());
     }
 

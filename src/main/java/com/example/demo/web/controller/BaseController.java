@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-public abstract class BaseController<DTO, Entity> {
+public abstract class BaseController<Dto, Entity> {
 
     @Autowired
     protected ModelMapper modelMapper;
 
-    protected abstract DTO convertToDto(Entity entity);
+    protected abstract Dto convertToDto(Entity entity);
 
-    protected abstract Entity convertToEntity(DTO dto);
+    protected abstract Entity convertToEntity(Dto dto);
 
 }
