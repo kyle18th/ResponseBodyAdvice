@@ -12,10 +12,4 @@ public class Config {
         return new ModelMapper();
     }
 
-//
-//    @Bean
-//    public MethodValidationPostProcessor methodValidationPostProcessor() {
-//        return new MethodValidationPostProcessor();
-//    }
-
 }
