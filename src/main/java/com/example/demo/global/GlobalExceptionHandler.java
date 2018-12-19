@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -45,16 +46,30 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 没有通过校验规则, 400
+     * RequestBody 没有通过校验规则, 400
      */
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseModel handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         logger.warn(e.getMessage(), e);
         String message = e.getBindingResult().getFieldErrors().stream()
-                .map(fieldError -> String.format("%s %s", fieldError.getField(), fieldError.getDefaultMessage()))
+                .map(fieldError ->
+                        Objects.isNull(fieldError) ? "null" : fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         return ResponseModel.fail(10002, message);
+    }
+
+    /**
+     * RequestParam PathVariable没有通过校验规则, 400
+     */
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseModel handleConstraintViolationException(ConstraintViolationException e) {
+        logger.warn(e.getMessage(), e);
+        String message = e.getConstraintViolations().stream()
+                .map(cv -> Objects.isNull(cv) ? "null" : cv.getPropertyPath() + ": " + cv.getMessage())
+                .collect(Collectors.joining(", "));
+        return ResponseModel.fail(10003, message);
     }
 
     /**
