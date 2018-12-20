@@ -39,8 +39,7 @@ public class GlobalExceptionHandler {
      * JSON格式错误或字段类型错误, 400
      */
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({HttpMessageNotReadableException.class,
-            MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
     public ResponseModel handleHttpMessageNotReadableException(NestedRuntimeException e) {
         logger.warn(e.getMessage(), e);
         return ResponseModel.fail(10001, Objects.requireNonNull(e.getMessage()).split(";")[0]);

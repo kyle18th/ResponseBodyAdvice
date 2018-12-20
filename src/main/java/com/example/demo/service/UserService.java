@@ -1,14 +1,15 @@
 package com.example.demo.service;
 
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.demo.entity.User;
 import com.example.demo.exception.ServiceException;
 import com.example.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -20,8 +21,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Page<User> findAll(Integer page, Integer size) {
-        return userRepository.findAll(PageRequest.of(page, size));
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     public User findById(Integer id) {
