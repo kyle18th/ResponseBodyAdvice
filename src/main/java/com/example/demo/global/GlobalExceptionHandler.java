@@ -1,27 +1,28 @@
 package com.example.demo.global;
 
-import com.example.demo.exception.ServiceException;
-import com.example.demo.model.ResponseModel;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.validation.ConstraintViolationException;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import com.example.demo.exception.ServiceException;
+import com.example.demo.model.ResponseModel;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@ControllerAdvice
-@ResponseBody
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
